@@ -1,5 +1,7 @@
 ## Tasks
 
+---
+
 ### Task 1 — Fix the existing issues
 
 #### Test **GetActiveOffersAsync_ReturnsAllSeedOffers**
@@ -11,6 +13,18 @@ In production code there is used var now = DateTime.UtcNow; which is incorrect. 
 #### Test **ImportOffers_ReturnsImportedCount_InResponseBody**
 I've had to modify ImportAsync method in OfferImportService. I've change return value from void to Task<bool> where we are returning count of rows. But overall I have another idea so I've put comment to the test. We can discuss it later. 
 
-
 #### Test **ImportOffers_Returns500_WhenProductDoesNotExist**
 I've had again to modify ImportAsync method in OfferImportService. I've added exception handling for the case when a product does not exist. The method now throws a specific exception that can be caught in the test to verify that a 500 status code is returned.
+
+---
+
+### Task 2 — Extend the schema
+
+#### Steps:
+- Create a class with variables requested in the task description
+- Modify of Offer to add there key to Retailer class
+- Add modelBuilder.Entity<Retailer> and Seed in DbContext
+- Create new migration
+- Test migration
+
+---

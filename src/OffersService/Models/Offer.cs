@@ -11,6 +11,10 @@ public class Offer
 
     public Product Product { get; set; } = null!;
 
+    // Optional retailer association
+    public int? RetailerId { get; set; }
+    public Retailer? Retailer { get; set; }
+
     [Column(TypeName = "decimal(10,2)")]
     public decimal Price { get; set; }
 

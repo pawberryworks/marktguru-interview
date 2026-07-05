@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OffersService.Data;
 
@@ -11,9 +12,11 @@ using OffersService.Data;
 namespace OffersService.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260705200840_RetailerTable")]
+    partial class RetailerTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,7 +81,6 @@ namespace OffersService.Data.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Price = 1.49m,
                             ProductId = 2,
-                            RetailerId = 1,
                             Status = "Active",
                             ValidFrom = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             ValidTo = new DateTime(2024, 1, 2, 0, 0, 0, 0, DateTimeKind.Utc)
@@ -89,7 +91,6 @@ namespace OffersService.Data.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Price = 1.29m,
                             ProductId = 3,
-                            RetailerId = 2,
                             Status = "Active",
                             ValidFrom = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             ValidTo = new DateTime(2099, 12, 31, 0, 0, 0, 0, DateTimeKind.Utc)
@@ -175,24 +176,6 @@ namespace OffersService.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Retailers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Country = "US",
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            Name = "Retailer A"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Country = "CA",
-                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = false,
-                            Name = "Retailer B"
-                        });
                 });
 
             modelBuilder.Entity("OffersService.Models.Offer", b =>
