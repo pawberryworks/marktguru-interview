@@ -17,4 +17,6 @@ public class Retailer
     public bool IsActive { get; set; } = true;
 
     public DateTime CreatedAt { get; set; }
+
+    public ICollection<Offer> Offers { get; set; } = new List<Offer>();
 }

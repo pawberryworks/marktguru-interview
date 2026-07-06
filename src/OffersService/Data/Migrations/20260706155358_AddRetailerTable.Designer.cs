@@ -12,8 +12,8 @@ using OffersService.Data;
 namespace OffersService.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260705200840_RetailerTable")]
-    partial class RetailerTable
+    [Migration("20260706155358_AddRetailerTable")]
+    partial class AddRetailerTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,9 @@ namespace OffersService.Data.Migrations
                     b.Property<int?>("RetailerId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("RetailerId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -61,6 +64,8 @@ namespace OffersService.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.HasIndex("RetailerId");
+
+                    b.HasIndex("RetailerId1");
 
                     b.ToTable("Offers");
 
@@ -81,6 +86,7 @@ namespace OffersService.Data.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Price = 1.49m,
                             ProductId = 2,
+                            RetailerId = 1,
                             Status = "Active",
                             ValidFrom = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             ValidTo = new DateTime(2024, 1, 2, 0, 0, 0, 0, DateTimeKind.Utc)
@@ -91,6 +97,7 @@ namespace OffersService.Data.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Price = 1.29m,
                             ProductId = 3,
+                            RetailerId = 2,
                             Status = "Active",
                             ValidFrom = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             ValidTo = new DateTime(2099, 12, 31, 0, 0, 0, 0, DateTimeKind.Utc)
@@ -176,6 +183,24 @@ namespace OffersService.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Retailers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Country = "US",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = true,
+                            Name = "Retailer A"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Country = "CA",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            IsActive = false,
+                            Name = "Retailer B"
+                        });
                 });
 
             modelBuilder.Entity("OffersService.Models.Offer", b =>
@@ -191,12 +216,21 @@ namespace OffersService.Data.Migrations
                         .HasForeignKey("RetailerId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("OffersService.Models.Retailer", null)
+                        .WithMany("Offers")
+                        .HasForeignKey("RetailerId1");
+
                     b.Navigation("Product");
 
                     b.Navigation("Retailer");
                 });
 
             modelBuilder.Entity("OffersService.Models.Product", b =>
+                {
+                    b.Navigation("Offers");
+                });
+
+            modelBuilder.Entity("OffersService.Models.Retailer", b =>
                 {
                     b.Navigation("Offers");
                 });

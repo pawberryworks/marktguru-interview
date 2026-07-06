@@ -4,16 +4,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace OffersService.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class RetailerTable : Migration
+    public partial class AddRetailerTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
                 name: "RetailerId",
+                table: "Offers",
+                type: "int",
+                nullable: true);
+
+            migrationBuilder.AddColumn<int>(
+                name: "RetailerId1",
                 table: "Offers",
                 type: "int",
                 nullable: true);
@@ -41,27 +49,41 @@ namespace OffersService.Data.Migrations
                 table: "Offers",
                 keyColumn: "Id",
                 keyValue: 1,
-                column: "RetailerId",
-                value: null);
+                columns: new[] { "RetailerId", "RetailerId1" },
+                values: new object[] { null, null });
 
             migrationBuilder.UpdateData(
                 table: "Offers",
                 keyColumn: "Id",
                 keyValue: 2,
-                column: "RetailerId",
-                value: null);
+                columns: new[] { "RetailerId", "RetailerId1" },
+                values: new object[] { 1, null });
 
             migrationBuilder.UpdateData(
                 table: "Offers",
                 keyColumn: "Id",
                 keyValue: 3,
-                column: "RetailerId",
-                value: null);
+                columns: new[] { "RetailerId", "RetailerId1" },
+                values: new object[] { 2, null });
+
+            migrationBuilder.InsertData(
+                table: "Retailers",
+                columns: new[] { "Id", "Country", "CreatedAt", "IsActive", "Name" },
+                values: new object[,]
+                {
+                    { 1, "US", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, "Retailer A" },
+                    { 2, "CA", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Retailer B" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Offers_RetailerId",
                 table: "Offers",
                 column: "RetailerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Offers_RetailerId1",
+                table: "Offers",
+                column: "RetailerId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Retailers_Name",
@@ -77,59 +99,23 @@ namespace OffersService.Data.Migrations
                 principalColumn: "Id",
                 onDelete: ReferentialAction.SetNull);
 
-            migrationBuilder.InsertData(
-                table: "Retailers",
-                columns: new[] { "Id", "Country", "CreatedAt", "IsActive", "Name" },
-                values: new object[,]
-                {
-                    { 1, "US", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), true, "Retailer A" },
-                    { 2, "CA", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), false, "Retailer B" }
-                });
-
-            migrationBuilder.UpdateData(
+            migrationBuilder.AddForeignKey(
+                name: "FK_Offers_Retailers_RetailerId1",
                 table: "Offers",
-                keyColumn: "Id",
-                keyValue: 2,
-                column: "RetailerId",
-                value: 1);
-
-            migrationBuilder.UpdateData(
-                table: "Offers",
-                keyColumn: "Id",
-                keyValue: 3,
-                column: "RetailerId",
-                value: 2);
+                column: "RetailerId1",
+                principalTable: "Retailers",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.UpdateData(
-                table: "Offers",
-                keyColumn: "Id",
-                keyValue: 2,
-                column: "RetailerId",
-                value: null);
-
-            migrationBuilder.UpdateData(
-                table: "Offers",
-                keyColumn: "Id",
-                keyValue: 3,
-                column: "RetailerId",
-                value: null);
-
-            migrationBuilder.DeleteData(
-                table: "Retailers",
-                keyColumn: "Id",
-                keyValue: 1);
-
-            migrationBuilder.DeleteData(
-                table: "Retailers",
-                keyColumn: "Id",
-                keyValue: 2);
-
             migrationBuilder.DropForeignKey(
                 name: "FK_Offers_Retailers_RetailerId",
+                table: "Offers");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Offers_Retailers_RetailerId1",
                 table: "Offers");
 
             migrationBuilder.DropTable(
@@ -139,8 +125,16 @@ namespace OffersService.Data.Migrations
                 name: "IX_Offers_RetailerId",
                 table: "Offers");
 
+            migrationBuilder.DropIndex(
+                name: "IX_Offers_RetailerId1",
+                table: "Offers");
+
             migrationBuilder.DropColumn(
                 name: "RetailerId",
+                table: "Offers");
+
+            migrationBuilder.DropColumn(
+                name: "RetailerId1",
                 table: "Offers");
         }
     }

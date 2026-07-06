@@ -42,6 +42,9 @@ namespace OffersService.Data.Migrations
                     b.Property<int?>("RetailerId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("RetailerId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -58,6 +61,8 @@ namespace OffersService.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.HasIndex("RetailerId");
+
+                    b.HasIndex("RetailerId1");
 
                     b.ToTable("Offers");
 
@@ -208,12 +213,21 @@ namespace OffersService.Data.Migrations
                         .HasForeignKey("RetailerId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("OffersService.Models.Retailer", null)
+                        .WithMany("Offers")
+                        .HasForeignKey("RetailerId1");
+
                     b.Navigation("Product");
 
                     b.Navigation("Retailer");
                 });
 
             modelBuilder.Entity("OffersService.Models.Product", b =>
+                {
+                    b.Navigation("Offers");
+                });
+
+            modelBuilder.Entity("OffersService.Models.Retailer", b =>
                 {
                     b.Navigation("Offers");
                 });
