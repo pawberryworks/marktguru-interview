@@ -9,19 +9,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OffersService.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddRetailerTable : Migration
+    public partial class RetailerTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
                 name: "RetailerId",
-                table: "Offers",
-                type: "int",
-                nullable: true);
-
-            migrationBuilder.AddColumn<int>(
-                name: "RetailerId1",
                 table: "Offers",
                 type: "int",
                 nullable: true);
@@ -49,22 +43,22 @@ namespace OffersService.Data.Migrations
                 table: "Offers",
                 keyColumn: "Id",
                 keyValue: 1,
-                columns: new[] { "RetailerId", "RetailerId1" },
-                values: new object[] { null, null });
+                column: "RetailerId",
+                value: null);
 
             migrationBuilder.UpdateData(
                 table: "Offers",
                 keyColumn: "Id",
                 keyValue: 2,
-                columns: new[] { "RetailerId", "RetailerId1" },
-                values: new object[] { 1, null });
+                column: "RetailerId",
+                value: 1);
 
             migrationBuilder.UpdateData(
                 table: "Offers",
                 keyColumn: "Id",
                 keyValue: 3,
-                columns: new[] { "RetailerId", "RetailerId1" },
-                values: new object[] { 2, null });
+                column: "RetailerId",
+                value: 2);
 
             migrationBuilder.InsertData(
                 table: "Retailers",
@@ -81,11 +75,6 @@ namespace OffersService.Data.Migrations
                 column: "RetailerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Offers_RetailerId1",
-                table: "Offers",
-                column: "RetailerId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Retailers_Name",
                 table: "Retailers",
                 column: "Name",
@@ -97,14 +86,7 @@ namespace OffersService.Data.Migrations
                 column: "RetailerId",
                 principalTable: "Retailers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.SetNull);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Offers_Retailers_RetailerId1",
-                table: "Offers",
-                column: "RetailerId1",
-                principalTable: "Retailers",
-                principalColumn: "Id");
+                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
@@ -114,10 +96,6 @@ namespace OffersService.Data.Migrations
                 name: "FK_Offers_Retailers_RetailerId",
                 table: "Offers");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_Offers_Retailers_RetailerId1",
-                table: "Offers");
-
             migrationBuilder.DropTable(
                 name: "Retailers");
 
@@ -125,16 +103,8 @@ namespace OffersService.Data.Migrations
                 name: "IX_Offers_RetailerId",
                 table: "Offers");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Offers_RetailerId1",
-                table: "Offers");
-
             migrationBuilder.DropColumn(
                 name: "RetailerId",
-                table: "Offers");
-
-            migrationBuilder.DropColumn(
-                name: "RetailerId1",
                 table: "Offers");
         }
     }

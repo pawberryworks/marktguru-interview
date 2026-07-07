@@ -12,8 +12,8 @@ using OffersService.Data;
 namespace OffersService.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260706155358_AddRetailerTable")]
-    partial class AddRetailerTable
+    [Migration("20260707215006_RetailerTable")]
+    partial class RetailerTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,9 +45,6 @@ namespace OffersService.Data.Migrations
                     b.Property<int?>("RetailerId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RetailerId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -64,8 +61,6 @@ namespace OffersService.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.HasIndex("RetailerId");
-
-                    b.HasIndex("RetailerId1");
 
                     b.ToTable("Offers");
 
@@ -212,13 +207,9 @@ namespace OffersService.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("OffersService.Models.Retailer", "Retailer")
-                        .WithMany()
-                        .HasForeignKey("RetailerId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("OffersService.Models.Retailer", null)
                         .WithMany("Offers")
-                        .HasForeignKey("RetailerId1");
+                        .HasForeignKey("RetailerId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Product");
 

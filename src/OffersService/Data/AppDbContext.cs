@@ -46,9 +46,9 @@ public class AppDbContext : DbContext
             entity.HasIndex(e => e.ProductId);
             // Optional retailer relationship. RetailerId is nullable on Offer.
             entity.HasOne(e => e.Retailer)
-                  .WithMany()
+                  .WithMany(p => p.Offers)
                   .HasForeignKey(e => e.RetailerId)
-                  .OnDelete(DeleteBehavior.SetNull);
+                  .OnDelete(DeleteBehavior.Cascade);
             entity.HasIndex(e => e.RetailerId);
         });
 
