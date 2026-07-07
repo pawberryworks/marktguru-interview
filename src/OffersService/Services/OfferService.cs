@@ -21,16 +21,65 @@ public class OfferService : IOfferService
         var now = _dateTimeProvider.UtcNow;
         var offers = await _context.Offers
             .Include(o => o.Product)
+            .Include(o => o.Retailer)
             .Where(o => o.ValidTo >= now && o.Status == OfferStatus.Active)
             .ToListAsync();
 
         return offers.Select(o => new OfferDto(o));
     }
 
+    public async Task<PaginatedOffersResponse> GetPaginatedOffersAsync(int page, int pageSize, int? productId, int? retailerId, string status)
+    {
+        var now = _dateTimeProvider.UtcNow;
+        var query = _context.Offers
+            .Include(o => o.Product)
+            .Include(o => o.Retailer)
+            .AsQueryable();
+
+        // Status filter
+        var s = (status ?? string.Empty).ToLowerInvariant();
+        if (s == "active")
+        {
+            query = query.Where(o => o.ValidTo >= now && o.Status == OfferStatus.Active);
+        }
+        else if (s == "expired")
+        {
+            query = query.Where(o => o.ValidTo < now || o.Status == OfferStatus.Expired);
+        }
+
+        // Optional filters
+        if (productId.HasValue)
+            query = query.Where(o => o.ProductId == productId.Value);
+
+        if (retailerId.HasValue)
+            query = query.Where(o => o.RetailerId == retailerId.Value);
+
+        // Compute total before pagination
+        var total = await query.CountAsync();
+
+        // Order and paginate
+        var offers = await query
+            .OrderByDescending(o => o.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        var items = offers.Select(o => new OfferDto(o)).ToList();
+
+        return new PaginatedOffersResponse
+        {
+            Items = items,
+            Total = total,
+            Page = page,
+            PageSize = pageSize
+        };
+    }
+
     public async Task<OfferDto?> GetByIdAsync(int id)
     {
         var offer = await _context.Offers
             .Include(o => o.Product)
+            .Include(o => o.Retailer)
             .FirstOrDefaultAsync(o => o.Id == id);
 
         return offer is null ? null : new OfferDto(offer);
