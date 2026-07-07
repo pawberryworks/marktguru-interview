@@ -17,6 +17,25 @@ public class OffersController : ControllerBase
         _importService = importService;
     }
 
+    [HttpGet()]
+    public async Task<ActionResult<PaginatedOffersResponse>> GetPaginatedOffers(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        [FromQuery] int? productId = null,
+        [FromQuery] int? retailerId = null,
+        [FromQuery] Models.OfferFilterStatus status = Models.OfferFilterStatus.Active)
+    {
+        try
+        {
+            var offers = await _offerService.GetPaginatedOffersAsync(page, pageSize, productId, retailerId, status);
+            return Ok(offers);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpGet("active")]
     public ActionResult<IEnumerable<OfferDto>> GetActiveOffers()
     {

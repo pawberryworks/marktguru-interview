@@ -25,6 +25,7 @@ builder.Services.AddHangfireServer();
 // Application services
 builder.Services.AddScoped<IOfferService, OfferService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IRetailerService, RetailerService>();
 builder.Services.AddScoped<IOfferImportService, OfferImportService>();
 
 builder.Services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
