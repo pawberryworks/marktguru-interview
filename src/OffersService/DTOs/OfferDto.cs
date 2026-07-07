@@ -22,6 +22,9 @@ public class OfferDto
 
     public string Status { get; set; } = string.Empty;
 
+    // Parameterless constructor required for System.Text.Json deserialization in tests
+    public OfferDto() { }
+
     public OfferDto(Offer offer)
     {
         Id = offer.Id;

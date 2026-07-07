@@ -24,13 +24,14 @@ public class OfferServiceTests
         // Arrange
         await using var context = CreateContext();
         var fakeDateTimeProvider = new FakeDateTimeProvider(new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+        var now = fakeDateTimeProvider.UtcNow;
 
         var product = new Product
         {
             Id        = 1,
             Name      = "Test Product",
             Category  = "Test",
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = now
         };
         context.Products.Add(product);
 
@@ -40,20 +41,20 @@ public class OfferServiceTests
                 Id        = 1,
                 ProductId = 1,
                 Price     = 1.00m,
-                ValidFrom = DateTime.UtcNow.AddDays(-10),
-                ValidTo   = DateTime.UtcNow.AddDays(-1),   // expired
+                ValidFrom = now.AddDays(-10),
+                ValidTo   = now.AddDays(-1),   // expired
                 Status    = OfferStatus.Active,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = now
             },
             new Offer
             {
                 Id        = 2,
                 ProductId = 1,
                 Price     = 2.00m,
-                ValidFrom = DateTime.UtcNow.AddDays(-1),
-                ValidTo   = DateTime.UtcNow.AddDays(10),   // valid
+                ValidFrom = now.AddDays(-1),
+                ValidTo   = now.AddDays(10),   // valid
                 Status    = OfferStatus.Active,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = now
             }
         );
         await context.SaveChangesAsync();
