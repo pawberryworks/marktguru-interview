@@ -2,27 +2,36 @@ using OffersService.Models;
 
 namespace OffersService.DTOs;
 
-public record OfferDto(
-    int Id,
-    int ProductId,
-    string ProductName,
-    int? RetailerId,
-    string RetailerName,
-    decimal Price,
-    DateTime ValidFrom,
-    DateTime ValidTo,
-    string Status)
+public class OfferDto
 {
-    public OfferDto(Offer offer) : this(
-        offer.Id,
-        offer.ProductId,
-        offer.Product?.Name ?? string.Empty,
-        offer.RetailerId,
-        offer.Retailer?.Name ?? string.Empty,
-        offer.Price,
-        offer.ValidFrom,
-        offer.ValidTo,
-        offer.Status.ToString())
+    public int Id { get; set; }
+
+    public int ProductId { get; set; }
+
+    public string ProductName { get; set; } = string.Empty;
+
+    public int? RetailerId { get; set; }
+
+    public string RetailerName { get; set; } = string.Empty;
+
+    public decimal Price { get; set; }
+
+    public DateTime ValidFrom { get; set; }
+
+    public DateTime ValidTo { get; set; }
+
+    public string Status { get; set; } = string.Empty;
+
+    public OfferDto(Offer offer)
     {
+        Id = offer.Id;
+        ProductId = offer.ProductId;
+        ProductName = offer.Product?.Name ?? string.Empty;
+        RetailerId = offer.RetailerId;
+        RetailerName = offer.Retailer?.Name ?? string.Empty;
+        Price = offer.Price;
+        ValidFrom = offer.ValidFrom;
+        ValidTo = offer.ValidTo;
+        Status = offer.Status.ToString();
     }
 }

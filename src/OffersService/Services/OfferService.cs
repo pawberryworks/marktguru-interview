@@ -90,7 +90,7 @@ public class OfferService : IOfferService
         return offer is null ? null : new OfferDto(offer);
     }
 
-    private async void ValidatePaginationRequest(int page, int pageSize)
+    private void ValidatePaginationRequest(int page, int pageSize)
     {
         // Validate paging inputs here so controller can simply translate validation errors to 400
         if (page < 1)

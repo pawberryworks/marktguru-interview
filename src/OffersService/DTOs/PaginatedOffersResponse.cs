@@ -1,4 +1,5 @@
 using OffersService.DTOs;
+using OffersService.Models;
 
 namespace OffersService.DTOs;
 
