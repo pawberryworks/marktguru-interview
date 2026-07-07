@@ -5,5 +5,5 @@ namespace OffersService.Services;
 public interface IRetailerService
 {
     Task<RetailerWithOffersDto> GetRetailerWithOffersAsync(int id);
-    Task<int> CreateRetailerAsync(DTOs.RetailerCreateDto dto);
+    Task<int> CreateRetailerAsync(RetailerCreateDto dto);
 }

@@ -8,15 +8,17 @@ namespace OffersService.Services;
 public class RetailerService: IRetailerService
 {
     private readonly AppDbContext _context;
+    private readonly IDateTimeProvider _dateTimeProvider;
 
-    public RetailerService(AppDbContext context)
+    public RetailerService(AppDbContext context, IDateTimeProvider dateTimeProvider)
     {
         _context = context;
+        _dateTimeProvider = dateTimeProvider;
     }
 
     public async Task<RetailerWithOffersDto> GetRetailerWithOffersAsync(int id)
     {
-        var now = DateTime.UtcNow;
+        var now = _dateTimeProvider.UtcNow;
 
         // Single-query projection: filter by id and active flag, then compute aggregates and most recent active offer
         if (_context.Database.IsRelational())
@@ -82,11 +84,11 @@ public class RetailerService: IRetailerService
         if (exists)
             throw new DuplicateRetailerException($"A retailer with the name '{name}' already exists.");
 
-        var retailer = new Models.Retailer
+        var retailer = new Retailer
         {
             Name = name,
             Country = country,
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = _dateTimeProvider.UtcNow,
             IsActive = true
         };
 

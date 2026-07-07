@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using OffersService.Data;
 using OffersService.Models;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace OffersService.Tests.Helpers;
 
