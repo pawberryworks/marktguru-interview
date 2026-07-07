@@ -38,6 +38,6 @@ public class OfferImportService : IOfferImportService
 
     async Task<bool> productExistAsync(int productId)
     {
-        return await _context.Offers.AnyAsync(o => o.ProductId == productId);
+        return await _context.Products.AnyAsync(o => o.Id == productId);
     }
 }
