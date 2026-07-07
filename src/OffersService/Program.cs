@@ -3,6 +3,7 @@ using Hangfire.MySql;
 using Microsoft.EntityFrameworkCore;
 using OffersService.Data;
 using OffersService.Services;
+using OffersService.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Services.AddScoped<IOfferService, OfferService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IRetailerService, RetailerService>();
 builder.Services.AddScoped<IOfferImportService, OfferImportService>();
+builder.Services.AddScoped<OfferExpiryJob>();
 
 builder.Services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
 
@@ -53,6 +55,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHangfireDashboard("/hangfire");
 app.MapControllers();
+
+// Register recurring Hangfire job to expire offers every hour
+RecurringJob.AddOrUpdate<OfferExpiryJob>(
+    "OfferExpiryJob",
+    job => job.ExecuteAsync(CancellationToken.None),
+    Cron.Hourly);
 
 app.Run();
 
