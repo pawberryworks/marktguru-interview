@@ -59,7 +59,40 @@ public class OfferService : IOfferService
         if (retailerId.HasValue)
             query = query.Where(o => o.RetailerId == retailerId.Value);
 
-        // Compute total before pagination
+        // Compute total and page items. For relational providers try to do this in a single
+        // round-trip by projecting a scalar subquery for the total; fall back to the
+        // two-query approach for non-relational providers.
+        if (_context.Database.IsRelational())
+        {
+            var baseQuery = query;
+            var offset = (page - 1) * pageSize;
+
+            // Project the entity plus a scalar subquery Count() so EF can translate this
+            // into a single SQL statement with a COUNT() subquery.
+            var projected = baseQuery
+                .OrderByDescending(o => o.CreatedAt)
+                .Skip(offset)
+                .Take(pageSize)
+                .Select(o => new
+                {
+                    Offer = o,
+                    Total = baseQuery.Count()
+                });
+
+            var rows = await projected.ToListAsync();
+            var relItems = rows.Select(r => new OfferDto(r.Offer)).ToList();
+            var totalCount = rows.Count > 0 ? rows[0].Total : 0;
+
+            return new PaginatedOffersResponse
+            {
+                Items = relItems,
+                Total = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+
+        // Fallback for non-relational providers: separate count and page queries.
         var total = await query.CountAsync();
 
         // Order and paginate

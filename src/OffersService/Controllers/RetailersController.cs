@@ -27,6 +27,11 @@ public class RetailersController : ControllerBase
         {
             return NotFound();
         }
+        catch (Exception ex)
+        {
+            // Return exception message for test visibility (kept concise)
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
     }
 
     [HttpPost]
