@@ -18,8 +18,15 @@ public class RetailersController : ControllerBase
     [HttpGet("{id:int}/stats")]
     public async Task<ActionResult<RetailerWithOffersDto>> GetStatsById(int id)
     {
-        //TODO : Handle the case when retailer is null (not found)
-        return Ok(await _retailerService.GetRetailerWithOffersAsync(id));
+        try
+        {
+            var dto = await _retailerService.GetRetailerWithOffersAsync(id);
+            return Ok(dto);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 
     [HttpPost]
