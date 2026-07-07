@@ -28,23 +28,28 @@ public class OfferService : IOfferService
         return offers.Select(o => new OfferDto(o));
     }
 
-    public async Task<PaginatedOffersResponse> GetPaginatedOffersAsync(int page, int pageSize, int? productId, int? retailerId, string status)
+    public async Task<PaginatedOffersResponse> GetPaginatedOffersAsync(int page, int pageSize, int? productId, int? retailerId, OfferFilterStatus status)
     {
+        ValidatePaginationRequest(page, pageSize);
+
         var now = _dateTimeProvider.UtcNow;
         var query = _context.Offers
             .Include(o => o.Product)
             .Include(o => o.Retailer)
             .AsQueryable();
-
         // Status filter
-        var s = (status ?? string.Empty).ToLowerInvariant();
-        if (s == "active")
+        switch (status)
         {
-            query = query.Where(o => o.ValidTo >= now && o.Status == OfferStatus.Active);
-        }
-        else if (s == "expired")
-        {
-            query = query.Where(o => o.ValidTo < now || o.Status == OfferStatus.Expired);
+            case OfferFilterStatus.Active:
+                query = query.Where(o => o.ValidTo >= now && o.Status == OfferStatus.Active);
+                break;
+            case OfferFilterStatus.Expired:
+                query = query.Where(o => o.ValidTo < now || o.Status == OfferStatus.Expired);
+                break;
+            case OfferFilterStatus.All:
+            default:
+                // no filter
+                break;
         }
 
         // Optional filters
@@ -83,5 +88,18 @@ public class OfferService : IOfferService
             .FirstOrDefaultAsync(o => o.Id == id);
 
         return offer is null ? null : new OfferDto(offer);
+    }
+
+    private async void ValidatePaginationRequest(int page, int pageSize)
+    {
+        // Validate paging inputs here so controller can simply translate validation errors to 400
+        if (page < 1)
+            throw new ArgumentException("page must be >= 1");
+
+        if (pageSize < 1)
+            throw new ArgumentException("pageSize must be >= 1");
+
+        if (pageSize > 100)
+            throw new ArgumentException("pageSize cannot exceed 100.");
     }
 }

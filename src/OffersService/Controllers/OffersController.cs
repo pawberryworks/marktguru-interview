@@ -23,23 +23,17 @@ public class OffersController : ControllerBase
         [FromQuery] int pageSize = 20,
         [FromQuery] int? productId = null,
         [FromQuery] int? retailerId = null,
-        [FromQuery] string status = "active")
+        [FromQuery] Models.OfferFilterStatus status = Models.OfferFilterStatus.Active)
     {
-        if (page < 1)
-            return BadRequest("page must be >= 1");
-
-        if (pageSize < 1)
-            return BadRequest("pageSize must be >= 1");
-
-        if (pageSize > 100)
-            return BadRequest("pageSize cannot exceed 100.");
-
-        var s = (status ?? string.Empty).ToLowerInvariant();
-        if (s != "active" && s != "expired" && s != "all")
-            return BadRequest("status must be one of: active, expired, all");
-
-        var offers = await _offerService.GetPaginatedOffersAsync(page, pageSize, productId, retailerId, s);
-        return Ok(offers);
+        try
+        {
+            var offers = await _offerService.GetPaginatedOffersAsync(page, pageSize, productId, retailerId, status);
+            return Ok(offers);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpGet("active")]
